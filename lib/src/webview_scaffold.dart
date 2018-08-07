@@ -60,8 +60,13 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
   @override
   void dispose() {
     super.dispose();
-    webviewReference.close();
+    // webviewReference.close();
     webviewReference.dispose();
+  }
+
+  Future<bool> _onWillPop() async {
+    await webviewReference.close();
+    return Future.value(true);
   }
 
   @override
@@ -91,11 +96,15 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
         });
       }
     }
-    return new Scaffold(
+
+    return new WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
         appBar: widget.appBar,
         persistentFooterButtons: widget.persistentFooterButtons,
         bottomNavigationBar: widget.bottomNavigationBar,
-        body: const Center(child: const CircularProgressIndicator()));
+        body: const Center(child: const CircularProgressIndicator())),
+      );
   }
 
   Rect _buildRect(BuildContext context) {
